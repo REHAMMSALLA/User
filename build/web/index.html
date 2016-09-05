@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Quadratic Equation </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script language="javascript">
+            var jsonhttp;
+
+            function getresult() {
+                jsonhttp = new XMLHttpRequest();
+                var a = document.getElementById("a");
+                var b = document.getElementById("b");
+                var c = document.getElementById("c");
+                var jsonobject = '{"a":' + a.value + ',"b":' + b.value + ',"c":' + c.value + '}';//send parameters as json object
+
+               var url = "http://localhost:8080/Calculate/webresources/resolve/"+ jsonobject+"/method" ;
+                jsonhttp.open('GET', url, true);
+                jsonhttp.send(null);
+
+                jsonhttp.onreadystatechange = function () {
+
+                    var res = document.getElementById("res");
+
+                    if (jsonhttp.readyState === 4) {
+
+                        if (jsonhttp.status === 200) {
+                            var result = eval("(" + jsonhttp.responseText + ")");
+                            if (result.x1===result.x2)
+                                res.value="x1=" + result.x1 + " , x2=" + result.x2 + "جذر مضاعف ";
+                            else
+                              if(result.x1.toString().contains("i") && result.x2.toString().contains("i"))
+                              res.value ="مستحيلة الحل دلتا اصغر من الصفر " ;  
+                            else
+                             res.value = "x1=" + result.x1 + " , x2=" + result.x2;
+                        }
+                        else {
+                            alert("Error ->" + jsonhttp.responseText + jsonhttp.status);
+                        }
+
+                    }
+                };
+            }
+        </script>
+    </head>
+    <body style="background-color: antiquewhite" >
+        <style>
+            body{ background-image: url("5.jpg");
+                  /*             background-repeat: repeat-x;}*/ }
+            </style>
+
+        <center>
+            <h1 style="color: darkslategray"> Solve this Equation </h1>
+        <h3>aX^2+bX+c=0</h3>
+        <form>
+            <table>
+                <tr>
+                    <td>Enter a :  </td>
+                    <td><input type="text" id="a" size="10"/>
+                </tr>
+                <tr>
+                    <td>Enter b :  </td>
+                    <td><input type="text" id="b" size="10"/> </td>
+                </tr>
+
+                <tr>
+                    <td>Enter c : </td>
+                    <td><input type="text" id="c" size="10"/> </td>
+                </tr>
+
+
+
+                <tr>
+                    <td>The result is : </td>
+                    <td><output id="res"> </output> </td>
+                </tr>
+            </table>
+            <input type="button" value="Get Result" onclick="getresult()"/>
+        </form>
+    </center>
+</body>
+</html>
+
+
+
